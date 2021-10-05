@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "361731093369",
+    "project_id": "zupay-fa2ac",
+    "storage_bucket": "zupay-fa2ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361731093369:android:0b2d4ee332ade731fd75a8",
+        "android_client_info": {
+          "package_name": "com.bhutdanilesh.zupay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361731093369-21ue4q1g6t80l3o9us0mdo9ump11p5lb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bhutdanilesh.zupay",
+            "certificate_hash": "faea63e6cc26430173603e96b792e52482637942"
+          }
+        },
+        {
+          "client_id": "361731093369-fff0onblo3g9nehmksi4had41kqvgscc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrLUN1_WlzSX7EAuAUHA72ktqOggd2nPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361731093369-fff0onblo3g9nehmksi4had41kqvgscc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
