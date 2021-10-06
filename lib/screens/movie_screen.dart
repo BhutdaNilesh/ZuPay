@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:zupay/screens/add_movie_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:zupay/screens/google_auth.dart';
+import 'package:zupay/screens/login_screen.dart';
 
 class MovieScreen extends StatefulWidget {
   const MovieScreen({Key? key}) : super(key: key);
@@ -15,17 +18,27 @@ class _MovieScreenState extends State<MovieScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Authentication authentication = Authentication();
     return Scaffold(
 
       appBar: AppBar(
         title: Text('MovieScreen'),
         centerTitle: true,
+        actions: [
+          ElevatedButton.icon(
+              onPressed: ()async{
+                await authentication.signOutFromGoogle().then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SignIn())));
+
+              },
+              icon: Icon(Icons.logout),
+              label: Text('Logout'))
+        ],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('users').doc('movies').snapshots(),
+        stream: FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).snapshots(),
         builder: (BuildContext ctx,AsyncSnapshot snap){
           if(!snap.hasData){
-            return CircularProgressIndicator();
+            return Center(child: const CircularProgressIndicator());
           }else {
             try{
               List movies = snap.data['movies'];
@@ -47,16 +60,17 @@ class _MovieScreenState extends State<MovieScreen> {
                       trailing: IconButton(
                         onPressed: ()async{
                           try{
-                            dynamic data = await FirebaseFirestore.instance.collection("users").doc("movies").get();
+                            dynamic data = await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).get();
                             List array = data['movies'];
                             array.removeAt(index);
                             print(array);
-                            await FirebaseFirestore.instance.collection("users").doc("movies").update(
+                            await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update(
                                 {
                                   'movies': array,
                                 }
                             ).then((value) => print("Success"));
                           }catch(e){
+
                             print('Failure');
                           }
                         },
@@ -68,7 +82,7 @@ class _MovieScreenState extends State<MovieScreen> {
                   }
               );
             }catch(e){
-              return CircularProgressIndicator();
+              return Center(child: const Text('Oops You have not watched any movie'));
             }
           }
         },

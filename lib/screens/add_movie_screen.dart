@@ -9,6 +9,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:zupay/screens/movie_screen.dart';
 
 
 class AddMovie extends StatefulWidget {
@@ -142,7 +143,7 @@ class _AddMovieState extends State<AddMovie> {
                   ElevatedButton(
                       onPressed: ()async{
                         try{
-                          dynamic data = await FirebaseFirestore.instance.collection("users").doc("movies").get();
+                          dynamic data = await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).get();
                           List array = data['movies'];
                           array.add({
                             "title": movieTitle,
@@ -150,13 +151,25 @@ class _AddMovieState extends State<AddMovie> {
                             "imageUrl": imageUrl,
                           });
                           print(array);
-                          await FirebaseFirestore.instance.collection("users").doc("movies").update(
+                          await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update(
                             {
                               'movies': array,
                             }
-                          ).then((value) => print("Success"));
-                          Navigator.pop(context);
+                          ).then((value) {
+                            print("Success");
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (conext)=>MovieScreen()));
+                          });
+
                         }catch(e){
+                          await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update(
+                              {
+                                'movies': {
+                                  "title": movieTitle,
+                                  "director": movieDirector,
+                                  "imageUrl": imageUrl,
+                                },
+                              }
+                          ).then((value) => print("Success"));
                           print('Failure');
                         }
                       },
