@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Buttons.Google,
                 onPressed: ()async{
                   // await signInWithGoogle().then((result){
-                  //   print('Mehul');
+                  //   print('outside');
                   //   if(result!=null){
                   //     print('Google Sign in');
                   //     FirebaseFirestore.instance.collection("users").doc(result.user!.uid).set({}).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context)=>MovieScreen())));

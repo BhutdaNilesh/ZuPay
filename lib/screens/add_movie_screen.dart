@@ -72,7 +72,7 @@ class _AddMovieState extends State<AddMovie> {
                     decoration: InputDecoration(
                       icon: Icon(Icons.title),
                       labelText: "Title",
-                       hintText: "Give the movie title"
+                       hintText: "Enter the movie title"
                     ),
                     validator: (val){
                       if(val!.isEmpty){
