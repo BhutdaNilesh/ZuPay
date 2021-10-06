@@ -31,28 +31,6 @@ class _AddMovieState extends State<AddMovie> {
   late String imageUrl;
 
   // FirebaseStorage storage = FirebaseStorage.instance;
-
-  Future pickImageGallery() async {
-    var image = await picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _imageFile = File(image.path);
-      });
-    }
-  }
-
-  uploadProfileImage() async {
-    String fileName = basename(_imageFile.path);
-    Reference reference = FirebaseStorage.instance
-        .ref()
-        .child('posterImage/$fileName');
-    UploadTask uploadTask = reference.putFile(_imageFile);
-    TaskSnapshot snapshot = await uploadTask;
-    imageUrl = await snapshot.ref.getDownloadURL();
-    print(imageUrl);
-  }
-
-
   // Future pickImage() async {
   //   final pickedFile = await picker.getImage(source: ImageSource.gallery);
   //
@@ -74,16 +52,7 @@ class _AddMovieState extends State<AddMovie> {
 
   CollectionReference movies = FirebaseFirestore.instance.collection('movies');
 
-  Future<void> addMovie() {
-    return movies
-        .doc().set({
-      'title': movieTitle,
-      'director': movieDirector,
-      // 'poster': imageUrl,
-    })
-        .then((value) => print("Movie Added"))
-        .catchError((error) => print("Failed to add Movie: $error"));
-  }
+
 
 
   @override
@@ -139,17 +108,57 @@ class _AddMovieState extends State<AddMovie> {
                     },
                   ),
                   SizedBox(height: height*0.04,),
-                  ElevatedButton(
-                      onPressed: (){
-                        pickImageGallery();
-                        // uploadProfileImage();
-                      },
-                      child: Text('Add Movie Poster')
+                  Row(
+                    children: [
+                      ElevatedButton(
+                          onPressed: ()async{
+                            var image = await picker.pickImage(source: ImageSource.gallery);
+                            if (image != null) {
+                              setState(() {
+                                _imageFile = File(image.path);
+                              });
+                            }
+
+                          },
+                          child: Text('Add Movie Poster')
+                      ),
+                      SizedBox(width: width*0.03,),
+                      ElevatedButton(
+                          onPressed: ()async{
+                            String fileName = basename(_imageFile.path);
+                            Reference reference = FirebaseStorage.instance
+                                .ref()
+                                .child('posterImage/$fileName');
+                            UploadTask uploadTask = reference.putFile(_imageFile);
+                            TaskSnapshot snapshot = await uploadTask;
+                            imageUrl = await snapshot.ref.getDownloadURL();
+                            print(imageUrl);
+                          },
+                          child: Text('Upload Movie Poster')
+                      ),
+                    ],
                   ),
                   SizedBox(height: height*0.04,),
                   ElevatedButton(
-                      onPressed: (){
-                        addMovie();
+                      onPressed: ()async{
+                        try{
+                          dynamic data = await FirebaseFirestore.instance.collection("users").doc("movies").get();
+                          List array = data['movies'];
+                          array.add({
+                            "title": movieTitle,
+                            "director": movieDirector,
+                            "imageUrl": imageUrl,
+                          });
+                          print(array);
+                          await FirebaseFirestore.instance.collection("users").doc("movies").update(
+                            {
+                              'movies': array,
+                            }
+                          ).then((value) => print("Success"));
+                          Navigator.pop(context);
+                        }catch(e){
+                          print('Failure');
+                        }
                       },
                       child: Text('Submit')
                   ),
