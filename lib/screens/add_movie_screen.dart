@@ -29,31 +29,7 @@ class _AddMovieState extends State<AddMovie> {
 
   late File _imageFile;
   final picker = ImagePicker();
-  late String imageUrl;
-
-  // FirebaseStorage storage = FirebaseStorage.instance;
-  // Future pickImage() async {
-  //   final pickedFile = await picker.getImage(source: ImageSource.gallery);
-  //
-  //   setState(() {
-  //     _imageFile = File(pickedFile!.path);
-  //   });
-  // }
-  //
-  // Future uploadImageToFirebase(BuildContext context) async {
-  //   String fileName = basename(_imageFile.path);
-  //   Reference firebaseStorageRef =
-  //   FirebaseStorage.instance.ref().child('uploads/$fileName');
-  //   UploadTask uploadTask = firebaseStorageRef.putFile(_imageFile);
-  //   TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
-  //   taskSnapshot.ref.getDownloadURL().then(
-  //         (value) => print("Done: $value"),
-  //   );
-  // }
-
-  CollectionReference movies = FirebaseFirestore.instance.collection('movies');
-
-
+  String imageUrl="";
 
 
   @override
@@ -63,7 +39,7 @@ class _AddMovieState extends State<AddMovie> {
 
     return Scaffold(
       body: Form(
-        key: _formKey,
+          key: _formKey,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: width*0.06,vertical: height*0.06),
             child: SingleChildScrollView(
@@ -71,9 +47,9 @@ class _AddMovieState extends State<AddMovie> {
                 children: [
                   TextFormField(
                     decoration: InputDecoration(
-                      icon: Icon(Icons.title),
-                      labelText: "Title",
-                       hintText: "Enter the movie title"
+                        icon: Icon(Icons.title),
+                        labelText: "Title",
+                        hintText: "Enter the movie title"
                     ),
                     validator: (val){
                       if(val!.isEmpty){
@@ -118,6 +94,7 @@ class _AddMovieState extends State<AddMovie> {
                               setState(() {
                                 _imageFile = File(image.path);
                               });
+                              Fluttertoast.showToast(msg: "Poster Selected!\nNow Click on Upload");
                             }
 
                           },
@@ -134,8 +111,9 @@ class _AddMovieState extends State<AddMovie> {
                             TaskSnapshot snapshot = await uploadTask;
                             imageUrl = await snapshot.ref.getDownloadURL();
                             print(imageUrl);
+                            Fluttertoast.showToast(msg: "Movie Poster Uploaded!\nNow Click on Submit");
                           },
-                          child: Text('Upload Movie Poster')
+                          child: Text('Upload')
                       ),
                     ],
                   ),
@@ -152,12 +130,13 @@ class _AddMovieState extends State<AddMovie> {
                           });
                           print(array);
                           await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).update(
-                            {
-                              'movies': array,
-                            }
+                              {
+                                'movies': array,
+                              }
                           ).then((value) {
                             print("Success");
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (conext)=>MovieScreen()));
+                            Fluttertoast.showToast(msg: "Movie details saved!");
+                            Navigator.pop(context);
                           });
 
                         }catch(e){

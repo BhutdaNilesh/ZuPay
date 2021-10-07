@@ -68,60 +68,62 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:zupay/screens/movie_screen.dart';
 
+import 'dashboard.dart';
 import 'google_auth.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({ Key? key }) : super(key: key);
+  const SignIn({Key? key}) : super(key: key);
 
   @override
   _SignInState createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
-
-  bool isLoading=false;
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
-    var height=MediaQuery.of(context).size.height;
-    var width=MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: isLoading ?Center(child: CircularProgressIndicator(),) : Center(
-        child: Column(
-          children: [
-            SizedBox(height: height*0.2,),
-              Center(
-                child: Image(
-                  image: AssetImage("images/logo.png"),
-                  height: height*0.3,
-                  width: width*0.3,
-                ),),
-            ElevatedButton(
-              child: Text("SignIn with google"),
-              onPressed: ()async{
-                setState(() {
-                  isLoading=true;
-                });
-                Authentication _authentication=Authentication();
-                try{
-                  await _authentication.signInwithGoogle().whenComplete((){
-                    Fluttertoast.showToast(msg: "Signed In!");
 
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>MovieScreen()));
+    Size size = MediaQuery.of(context).size;
+
+    return Scaffold(
+        backgroundColor: Colors.grey,
+        body: isLoading
+            ? Center(
+          child: CircularProgressIndicator(),
+        )
+            : Stack(children: [
+          Positioned(
+              top: size.height*0.15,
+              left: size.width*0.43,
+              child: Text("ROGERS",style: TextStyle(fontWeight: FontWeight.bold),)),
+          Image(image: AssetImage('images/logo.png'),height: size.height,),
+          Positioned(
+            top: size.height*0.7,
+            left: size.width*0.3,
+            child: ElevatedButton(
+              child: Text("SignIn with Google"),
+              onPressed: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                Authentication _authentication = Authentication();
+                try {
+                  await _authentication
+                      .signInwithGoogle()
+                      .whenComplete(() {
+                    Fluttertoast.showToast(msg: "Signed In!");
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (ctx) => DashBoard()));
                   });
-                }
-                catch(e){
-                  if(e is FirebaseAuthException){
-                    Fluttertoast.showToast(msg: "Error occurred while signing in...!");
+                } catch (e) {
+                  if (e is FirebaseAuthException) {
+                    Fluttertoast.showToast(
+                        msg: "Error occurred while signing in...!");
                   }
                 }
-                setState(() {
-                  isLoading=false;
-                });
               },
             ),
-          ],
-        )
-      ),
-    );
+          ),
+        ]));
   }
 }

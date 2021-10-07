@@ -29,7 +29,8 @@ class Authentication {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<String?> signInwithGoogle() async {
-    try {
+    try
+    {
       final GoogleSignInAccount? googleSignInAccount =
       await _googleSignIn.signIn();
       final GoogleSignInAuthentication googleSignInAuthentication =
@@ -38,12 +39,14 @@ class Authentication {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
+
       await _auth.signInWithCredential(credential).then((value) {
-        FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).update(
-            {
-              'lastSignInTime': DateTime.now(),
-            }
-        );
+        if(value.additionalUserInfo!.isNewUser){
+          FirebaseFirestore.instance.collection('users').doc(value.user!.uid).set({
+            'lastSignedIn':DateTime.now(),
+            'movies':[],
+          }).then((value) => print("Collection created"));
+        }
       });
     } on FirebaseAuthException catch (e) {
       print(e.message);
@@ -56,5 +59,3 @@ class Authentication {
     await _auth.signOut();
   }
 }
-
-

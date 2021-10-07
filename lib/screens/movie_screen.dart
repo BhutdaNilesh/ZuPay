@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zupay/screens/add_movie_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:zupay/screens/google_auth.dart';
 import 'package:zupay/screens/login_screen.dart';
+
+import 'dashboard.dart';
+
 
 class MovieScreen extends StatefulWidget {
   const MovieScreen({Key? key}) : super(key: key);
@@ -25,13 +29,10 @@ class _MovieScreenState extends State<MovieScreen> {
         title: Text('MovieScreen'),
         centerTitle: true,
         actions: [
-          ElevatedButton.icon(
-              onPressed: ()async{
-                await authentication.signOutFromGoogle().then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SignIn())));
-
-              },
-              icon: Icon(Icons.logout),
-              label: Text('Logout'))
+          IconButton(onPressed: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>DashBoard()));
+          },
+              icon: Icon(Icons.arrow_left)),
         ],
       ),
       body: StreamBuilder(
@@ -69,6 +70,7 @@ class _MovieScreenState extends State<MovieScreen> {
                                   'movies': array,
                                 }
                             ).then((value) => print("Success"));
+                            Fluttertoast.showToast(msg: "Deleting Movie Details...");
                           }catch(e){
 
                             print('Failure');
