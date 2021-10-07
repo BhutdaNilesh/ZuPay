@@ -24,7 +24,7 @@ class _DashBoardState extends State<DashBoard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Rogers"),
+        title: Text("Zupay"),
         actions: [
           Padding(
             padding: EdgeInsets.all(8.0),

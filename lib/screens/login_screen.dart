@@ -86,7 +86,7 @@ class _SignInState extends State<SignIn> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.grey[800],
         body: isLoading
             ? Center(
           child: CircularProgressIndicator(),
@@ -95,7 +95,7 @@ class _SignInState extends State<SignIn> {
           Positioned(
               top: size.height*0.15,
               left: size.width*0.43,
-              child: Text("ROGERS",style: TextStyle(fontWeight: FontWeight.bold),)),
+              child: Text("ZuPay",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24.0),)),
           Image(image: AssetImage('images/logo.png'),height: size.height,),
           Positioned(
             top: size.height*0.7,

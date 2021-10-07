@@ -22,7 +22,7 @@ class _RootState extends State<Root> {
           if(snapshot.hasError){
             return Scaffold(
               appBar: AppBar(
-                title: Text("Rogers"),
+                title: Text("ZuPay"),
               ),
               body: Center(
                 child: Text(
